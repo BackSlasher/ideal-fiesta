@@ -1,7 +1,7 @@
 services:
   server:
     image: nitz/java
-    build: server/
+    build: java/
     ports:
       - '9000:9000'
     deploy:
@@ -10,10 +10,18 @@ services:
           memory: 200M
     restart: always
 
-  sampler:
+  monitor:
     image: nitz/python
-    build: sampler/
+    build: python/
+    command: "python main.py monitor"
     depends_on:
       - server
     volumes:
-      - ./sampler/output:/output
+      - ./python/output:/output
+
+  stress:
+    image: nitz/python
+    build: python/
+    command: "python main.py stress -a 20"
+    depends_on:
+      - server

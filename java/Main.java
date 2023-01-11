@@ -32,18 +32,17 @@ class RootHandler extends MyHandler{
 class LeakHandler extends MyHandler{
   static final int mb = 1024 * 1024;
   ArrayList<byte[]> leaks = new ArrayList<>();
-  Pattern leakAmount = Pattern.compile("/(\\d+)$");
 
   @Override
   public void handle(HttpExchange he) throws IOException {
-    //String uri = he.getRequestURI().toString();
-    //Matcher m = leakAmount.matcher(uri);
-    //m.find();
-    //int leak_amount = Integer.parseInt(m.group(1));
-    int leak_amount=10;
+    int leak_amount_mb = Integer.parseInt(he.getRequestHeaders().getFirst("memory_mb"));
+    int leak_amount=leak_amount_mb * mb;
     try{
-      leaks.add(new byte[leak_amount * mb]);
+      leaks.add(new byte[leak_amount]);
       sendString(he, String.format("Leaked %d mb\n", leak_amount),200);
+      } catch (java.lang.OutOfMemoryError e) {
+        System.out.println(e);
+        System.exit(1);
     } catch (Exception e) {
       sendString(he, e.toString(),400);
     }
@@ -69,23 +68,6 @@ class Main {
   static ArrayList<byte[]> leaks = new ArrayList<>();
 
   public static void main(String args[]) throws Exception{
-
-    Timer timer = new Timer();
-    TimerTask myTask = new TimerTask() {
-        @Override
-        public void run() {
-            try{
-            int leak_amount=5 * 1024 * 1024; // 5 MB
-            leaks.add(new byte[leak_amount]);
-            System.out.println("stressed some more");
-            } catch (java.lang.OutOfMemoryError e) {
-              System.out.println(e);
-              System.exit(1);
-            }
-        }
-    };
-    timer.schedule(myTask, 2000, 2000);
-
     int port = 9000;
     HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
     System.out.println("server started at " + port);
