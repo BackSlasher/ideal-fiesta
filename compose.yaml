@@ -4,3 +4,11 @@ services:
     build: server/
     ports:
       - '9000:9000'
+
+  sampler:
+    image: nitz/python
+    build: sampler/
+    depends_on:
+      - server
+    volumes:
+      - ./sampler/output:/output
