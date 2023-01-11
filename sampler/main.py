@@ -6,7 +6,6 @@ from datetime import datetime
 import requests
 
 def sample_memory():
-    print("aaa")
     try:
         dat = requests.get('http://server:9000/mem_info', timeout=3)
         mem = int(dat.content.strip())
