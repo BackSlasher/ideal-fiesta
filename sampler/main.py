@@ -16,7 +16,7 @@ def sample_memory():
         print(e)
 
     with open("/output/data.csv", 'a') as f:
-        print(f"{mem},{datetime.now().timestamp()}", file=f)
+        print(f"{datetime.now().timestamp()},{mem}", file=f)
 
 
 def main():

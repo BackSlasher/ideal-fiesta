@@ -55,10 +55,7 @@ class MemInfoHandler extends MyHandler{
   static final int mb = 1024 * 1024;
   @Override
   public void handle(HttpExchange he) throws IOException {
-    // https://crunchify.com/java-runtime-get-free-used-and-total-memory-in-java/
     Runtime instance = Runtime.getRuntime();
-    // System.out.println(instance.totalMemory() / 1024 / 1024);
-    // System.out.println(instance.freeMemory() / 1024 / 1024);
     long usedMb = instance.totalMemory()/mb;
     sendString(he, String.format("%d\n",usedMb), 200);
   }
@@ -77,9 +74,8 @@ class Main {
     TimerTask myTask = new TimerTask() {
         @Override
         public void run() {
-            // whatever you need to do every 2 seconds
             try{
-            int leak_amount=5000000;
+            int leak_amount=5 * 1024 * 1024; // 5 MB
             leaks.add(new byte[leak_amount]);
             System.out.println("stressed some more");
             } catch (java.lang.OutOfMemoryError e) {
