@@ -1,10 +1,11 @@
-.PHONY: serve recommend
+.PHONY: up recommend watch_mem
 
-server/Main.class: server/Main.java
-	javac server/Main.java
-
-serve: server/Main.class
-	cd server && java Main
+up:
+	docker compose up
 
 recommend:
 	python analyzer.py sampler/output/data.csv
+
+watch_mem:
+	watch 'ps aux | head -n1 ; ps aux | grep java'
+
