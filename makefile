@@ -1,7 +1,7 @@
 .PHONY: serve
 
-Main.class: Main.java
-	javac Main.java
+server/Main.class: server/Main.java
+	javac server/Main.java
 
-serve: Main.class
-	java Main
+serve: server/Main.class
+	cd server && java Main
